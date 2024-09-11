@@ -1,7 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include <ctype.h>
-//#include <ANSI-color-codes.h>
+#include <time.h>
+#include <termios.h>
+#include <unistd.h>
+//#include <colorCodes.h>
+#define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
+
+
 
 struct Credential {
     char website[50];  // Website name
@@ -9,17 +15,22 @@ struct Credential {
     char password[35];  // Encrypted password
 };
 
-
+// Function prototypes
 int add(void);
 int lookup(void);
 int edit(void);
 int delete(void);
+int generate(int);
 int printTitle(void);
+void caesarCipher(char *text, int shift, int encrypt);
+void disableEcho();
+void enableEcho();
+
 
 // Global variable for storing credentials
-
 struct Credential cred;
 FILE *PassFile;
+
 
 
 // ANSI color codes
@@ -43,17 +54,23 @@ if (PassFile == NULL) {
 }
     printTitle(); // Print title
 
+    char choice;// User's choice variable
 
-
-
-    char choice;
+// Main loop
     while (1) {
         do {
-            printf("Options: (A)dd Password, (L)ookup Password, (E)dit Password, (D)elete Password, (G)enerate Password, (Q)uit\n");
+            printf("Options:"
+             "("BLU"A"reset")dd Password,"
+              "("BLU"L"reset")ookup Password,"
+               "("BLU"E"reset")dit Password,"
+                "("BLU"D"reset")elete Password,"
+                 "("BLU"G"reset")enerate Password,"
+                  "("BLU"Q"reset")uit\n");
+
             printf(">> ");
             scanf(" %c", &choice);  //Scan choice and remove space before %c to ignore previous newline
             choice = tolower(choice);  // Convert to lowercase
-        } while (choice != 'a' && choice != 'l' && choice != 'e' && choice != 'd' && choice != 'q');
+        } while (choice != 'a' && choice != 'l' && choice != 'e' && choice != 'd' && choice != 'g' && choice != 'q');
 
         switch(choice) {
             case 'a':
@@ -69,7 +86,12 @@ if (PassFile == NULL) {
                 delete();
                 break;
             case 'g':
-                generate();
+                printf(BLU"Welcome to the Password Generator!\n"reset);
+                printf("You will reciev a Password made out of random Numbers, Letters and Special characters.\n");
+                printf("Enter length of password: ");
+                int len;
+                scanf("%d", &len);
+                generate(len);
                 break;
             case 'q':
                 printf("Thank you for using the Password Manager!\n");
@@ -85,6 +107,7 @@ if (PassFile == NULL) {
     return 0;
 }
 
+// Function to print the title
 int printTitle(void){
 
     printf(CYN"      _____                                    _   __  __                                  \n");
@@ -97,10 +120,16 @@ int printTitle(void){
     printf("                                                                            |___/           \n");
     printf(reset"\n");
 
+    printf(YEL"Welcome to the Password Manager!\n"reset);
+    printf("You can add, lookup, edit, delete and generate passwords.\n");
+    printf("Press any key to continue...\n");  
+
     return 0;
 }
 
+// Function to add a new password
 int add(void){
+
 
     printf("Enter website name: ");
     scanf("%s", cred.website);
@@ -108,28 +137,94 @@ int add(void){
 
     printf("Enter username: ");
     scanf("%s", cred.username);
-    fprintf(PassFile, "||Username: %s", cred.username);
+    fprintf(PassFile, "|Username: %s", cred.username);
 
 
     printf("Enter password: ");
+    disableEcho();  // Disable terminal echoing
     scanf("%s", cred.password);
-    fprintf(PassFile, "||Password: %s\n", cred.password);
+    enableEcho();  // Enable terminal echoing
+    caesarCipher(cred.password, shiftKey, 1); // Encrypt the password using Caesar cipher
+    fprintf(PassFile, "|Password: %s\n", cred.password);
+
+    fflush(PassFile); // Clear the file buffer
 
 }
 
-int lookup(void){
-
-    printf("Enter website name: ");
+// Function to lookup a password
+int lookup(void) {
+ 
 }
 
+// Function to edit a password
 int edit(void){
 
 }
 
+// Function to delete a password
 int delete(void){
 
 }
 
-int generate(void){
+// Function to generate a password
+int generate(int len){
+   char possibleChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$^&*()";
+   char password[len+1];
+   
+   srand(time(0)); // seed for random number generation
+   for(int i = 0; i < len; i++) {
+      int randomIndex = rand() % (sizeof(possibleChars) - 1);
+      password[i] = possibleChars[randomIndex];
+   }
+   
+   password[len] = '\0'; // null terminate the string
+   printf("Generated Password: %s\n", password);
+   return 0;
+   }
 
+// Function to encrypt or decrypt a string using Caesar cipher
+void caesarCipher(char *text, int shift, int encrypt) {
+    // Ensure the shift is within 0-25 for alphabetic characters and 0-9 for digits
+    shift = shift % 26;
+    int digitShift = shift % 10;
+
+    // If decrypting, reverse the shift direction
+    if (!encrypt) {
+        shift = -shift;
+        digitShift = -digitShift;
+    }
+
+    for (int i = 0; text[i] != '\0'; i++) {
+        char ch = text[i];
+
+        // Encrypt or decrypt uppercase letters
+        if (isupper(ch)) {
+            text[i] = (ch - 'A' + shift + 26) % 26 + 'A'; // Add 26 to ensure positive result
+        }
+        // Encrypt or decrypt lowercase letters
+        else if (islower(ch)) {
+            text[i] = (ch - 'a' + shift + 26) % 26 + 'a'; // Add 26 to ensure positive result
+        }
+        // Encrypt or decrypt digits
+        else if (isdigit(ch)) {
+            text[i] = (ch - '0' + digitShift + 10) % 10 + '0'; // Add 10 to ensure positive result
+        }
+        // Non-alphabetic and non-digit characters remain unchanged
+    }
+}
+
+// Function to disable terminal echoing
+void disableEcho() {
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    tty.c_lflag &= ~ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+
+// Function to enable terminal echoing
+void enableEcho() {
+    struct termios tty;
+    tcgetattr(STDIN_FILENO, &tty);
+    tty.c_lflag |= ECHO;
+    tcsetattr(STDIN_FILENO, TCSANOW, &tty);
 }

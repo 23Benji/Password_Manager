@@ -1,7 +1,7 @@
 Makefile:password run
 
 password:
-	gcc -o PasswordManager main.c 2> /dev/null
+	gcc -o PasswordManager main.c
 
 run:
 	./PasswordManager

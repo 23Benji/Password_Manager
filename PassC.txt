@@ -1,3 +1,1 @@
-Website: 123||Username: 123||Password: 123
-Website: 123||Username: 123||Password: 1233
-Website: abc||Username: abc||Password: abcs
+Website: abc|Username: abc|Password: tlw
