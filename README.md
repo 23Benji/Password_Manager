@@ -29,13 +29,9 @@ To use the Password Manager, you’ll need a C compiler installed.
     ```bash
     cd password-manager
     ```
-3. Compile the program:
+3. Run the Makefile:
     ```bash
-    gcc password_manager.c -o password_manager
-    ```
-4. Run the program:
-    ```bash
-    ./password_manager
+    make
     ```
 
 ## Contributing
