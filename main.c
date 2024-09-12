@@ -22,11 +22,12 @@ int add(void);
 int lookup(void);
 int edit(void);
 int delete(void);
-int generate(int);
+int generate(void);
 int printTitle(void);
 void caesarCipher(char *text, int shift, int encrypt);
 void disableEcho();
 void enableEcho();
+int pressAnyKey(void);
 
 
 // Global variable for storing credentials
@@ -104,12 +105,7 @@ if (PassFile == NULL) {
                 fflush(stdin);  // Clear the input buffer
                 break;
             case '5':
-                printf(BLU"Welcome to the Password Generator!\n"reset);
-                printf("You will reciev a Password made out of random Numbers, Letters and Special characters.\n");
-                printf("Enter length of password: ");
-                int len;
-                scanf("%d", &len);
-                generate(len);
+                generate();
                 fflush(stdin);  // Clear the input buffer
                 break;
             case '0':
@@ -200,15 +196,7 @@ int add(void) {
     fflush(PassFile);  // Flush the file buffer
 
     printf(GRN"\nPassword added successfully!\n"reset);
-
-    // Ask the user if they want to add another password
-    printf("Add another password? (y/n)\n>> ");
-    scanf(" %c", &choice);
-    if (tolower(choice) == 'y') {
-        add();  // Call add again for the next password
-    }
-
-    return 0;
+    return(pressAnyKey());
 }
 
 
@@ -253,13 +241,7 @@ int lookup(void) {
 
                     // Output the decrypted password
                     printf(GRN"Decrypted password: %s\n"reset, encryptedPassword);
-                    printf("Lookup another password? (y/n)\n>>");
-                    char choice;
-                    scanf(" %c", &choice);
-                    if(tolower(choice) == 'y'){
-                        lookup();
-                    }
-                    return 0;  // Exit the function after finding the password
+                    return(pressAnyKey());
                 }
             }
         }
@@ -288,8 +270,17 @@ int delete(void){
 }
 
 // Function to generate a password
-int generate(int len){
-   char possibleChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$^&*()";
+int generate(void){
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+
+    int len;
+    printf(BLU"\n\nWelcome to the Password Generator!\n\n"reset);
+    printf("You will reciev a Password made out of random Numbers, Letters and Special characters.\n\n");
+    printf(RED"Please enter the length of desired password:\n"reset);
+    printf("-[");
+    scanf("%d", &len);
+   char possibleChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-=[]{}|;:,.<>?";
    char password[len+1];
    
    srand(time(0)); // seed for random number generation
@@ -299,7 +290,11 @@ int generate(int len){
    }
    
    password[len] = '\0'; // null terminate the string
-   printf("Generated Password: %s\n",password);
+   printf(GRN"\nPassword generated successfully!\n\n");
+   printf("You\'r Password: %s\n"reset,password);
+
+   pressAnyKey();
+
    return 0;
    }
 
@@ -348,4 +343,12 @@ void enableEcho() {
     tcgetattr(STDIN_FILENO, &tty);
     tty.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+
+// Function to pause the program and wait for the user to press a key
+int pressAnyKey(void) {
+    printf(BLU"\nPress ENTER to go back to Main Menu..."reset);
+    getchar();
+    getchar();
+    return 0;
 }
