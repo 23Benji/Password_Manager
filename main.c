@@ -111,7 +111,7 @@ if (PassFile == NULL) {
             case '0':
                 system("clear");  // Clear the screen
                 printTitle();  // Print the title
-                printf(GRN"\n\nThank you for using the Password Manager!\n");
+                printf(GRN"\n\n❤ Thank you for using the Password Manager!\n");
                 printf("See You soon! :D\n"reset);
                 return 0;
             default:
@@ -134,7 +134,7 @@ int printTitle(void){
     printf("     | |  | (_| \\__ \\__ \\\\ V  V / (_) | | | (_| | | |  | | (_| | | | | (_| | (_| |  __/ |   \n");
     printf("     |_|   \\__,_|___/___/ \\_/\\_/ \\___/|_|  \\__,_| |_|  |_|\___,_|_| |_|\\__,_|\\__,_|\\___|_|   \n");
     printf("                                                                             __/ |          \n");
-    printf("                                                                            |___/           \n");
+    printf("                                                                            |___/      By: Benji Paun     \n");
     printf(reset"\n");
 
     return 0;
