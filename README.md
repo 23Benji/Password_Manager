@@ -38,4 +38,4 @@ To use the Password Manager, you’ll need a C compiler installed.
 Contributions are welcome! If you'd like to add a feature or improve the code, feel free to fork the repository and submit a pull request.
 
 ## License
-This project is licensed under the MIT License. See the <LICENCE> file for details.
+This project is licensed under the MIT License. See the Licence file for details.
