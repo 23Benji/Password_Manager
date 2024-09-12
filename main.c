@@ -1,11 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include <ctype.h>
-#include <time.h>
-#include <termios.h>
-#include <unistd.h>
+#include<ctype.h>
+#include<time.h>
+#include<termios.h>
+#include<unistd.h>
 //#include <colorCodes.h>
 #define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
+#define MAX_LINE_LENGTH 256 // Maximum length of a line in the input file
+
 
 
 
@@ -35,6 +37,7 @@ FILE *PassFile;
 
 // ANSI color codes
 #define RED "\e[0;31m"
+#define GRN "\e[0;32m"
 #define YEL "\e[0;33m"
 #define BLU "\e[0;34m"
 #define MAG "\e[0;35m"
@@ -52,53 +55,57 @@ if (PassFile == NULL) {
     printf("Error creating file!\n");
     exit(1);  //
 }
-    printTitle(); // Print title
-
     char choice;// User's choice variable
 
 // Main loop
     while (1) {
         do {
-            printf("Options:"
-             "("BLU"A"reset")dd Password,"
-              "("BLU"L"reset")ookup Password,"
-               "("BLU"E"reset")dit Password,"
-                "("BLU"D"reset")elete Password,"
-                 "("BLU"G"reset")enerate Password,"
-                  "("BLU"Q"reset")uit\n");
+            system("clear");  // Clear the screen
+            printTitle();  // Print the title
+            printf(RED"Please select an option:"reset"\n\n");
+            printf(BLU"-[1]---Add Password\n\n");
+            printf("-[2]---Lookup Password\n\n");
+            printf("-[3]--Edit Password\n\n");
+            printf("-[4]--Delete Password\n\n");
+            printf("-[5]--Generate Password\n\n"reset);
+            printf(RED"-[00]--Exit\n"reset);
 
-            printf(">> ");
+            printf("-[");
             scanf(" %c", &choice);  //Scan choice and remove space before %c to ignore previous newline
-            choice = tolower(choice);  // Convert to lowercase
-        } while (choice != 'a' && choice != 'l' && choice != 'e' && choice != 'd' && choice != 'g' && choice != 'q');
+        } while (choice != '1' && choice != '2' && choice != '3' && choice != '4' && choice != '5' && choice != '0');
 
         switch(choice) {
-            case 'a':
+            case '1':
                 add();
+                fflush(stdin);  // Clear the input buffer
                 break;
-            case 'l':
+            case '2':
                 lookup();
+                fflush(stdin);  // Clear the input buffer                
                 break;
-            case 'e':
+            case '3':
                 edit();
+                fflush(stdin);  // Clear the input buffer
                 break;
-            case 'd':
+            case '4':
                 delete();
+                fflush(stdin);  // Clear the input buffer
                 break;
-            case 'g':
+            case '5':
                 printf(BLU"Welcome to the Password Generator!\n"reset);
                 printf("You will reciev a Password made out of random Numbers, Letters and Special characters.\n");
                 printf("Enter length of password: ");
                 int len;
                 scanf("%d", &len);
                 generate(len);
+                fflush(stdin);  // Clear the input buffer
                 break;
-            case 'q':
-                printf("Thank you for using the Password Manager!\n");
-                printf("See You soon! :D\n");
+            case '0':
+                printf(GRN"Thank you for using the Password Manager!\n");
+                printf("See You soon! :D\n"reset);
                 return 0;
             default:
-                printf("Invalid choice. Please try again.\n");
+                printf(RED"Invalid choice. Please try again.\n"reset);
                 break;
         }
     }
@@ -120,9 +127,8 @@ int printTitle(void){
     printf("                                                                            |___/           \n");
     printf(reset"\n");
 
-    printf(YEL"Welcome to the Password Manager!\n"reset);
-    printf("You can add, lookup, edit, delete and generate passwords.\n");
-    printf("Press any key to continue...\n");  
+    printf(YEL"Welcome to the Password Manager!\n\n"reset); 
+
 
     return 0;
 }
@@ -149,11 +155,81 @@ int add(void){
 
     fflush(PassFile); // Clear the file buffer
 
+    printf("\n");
+    printf(GRN"\nPassword added successfully!\n"reset);
+    printf("Add another password? (y/n)\n>>");
+    char choice;
+    scanf(" %c", &choice);
+    if(tolower(choice) == 'y'){
+        add();
+    }
+
+
 }
 
 // Function to lookup a password
 int lookup(void) {
- 
+    char searchWebsite[50];  // Website to search for
+    char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
+
+    // Ask the user for the website name
+    printf("Enter the website name: ");
+    scanf("%s", searchWebsite);
+
+    // Rewind the file to the beginning
+    rewind(PassFile);
+
+    // Loop through each line in the file
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        // Look for the website in the line
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            // Move 9 characters forward (to the website name itself)
+            websitePos += 9;
+
+            // Extract the website name until the first '|'
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            // Compare the website name
+            if (strcmp(websiteInLine, searchWebsite) == 0) {
+                // Find the position of the password
+                char *passwordPos = strstr(line, "Password: ");
+                if (passwordPos != NULL) {
+                    // Move 10 characters forward to get the encrypted password
+                    passwordPos += 10;
+
+                    // Extract the password until the end of the line
+                    char encryptedPassword[35];
+                    sscanf(passwordPos, "%s", encryptedPassword);
+
+                    // Decrypt the password
+                    caesarCipher(encryptedPassword, shiftKey, 0);  // 0 to decrypt
+
+                    // Output the decrypted password
+                    printf(GRN"Decrypted password: %s\n"reset, encryptedPassword);
+                    printf("Lookup another password? (y/n)\n>>");
+                    char choice;
+                    scanf(" %c", &choice);
+                    if(tolower(choice) == 'y'){
+                        lookup();
+                    }
+                    return 0;  // Exit the function after finding the password
+                }
+            }
+        }
+    }
+
+    // If no matching website was found
+    printf(RED"Website not found!\n"reset);
+    printf("Lookup another password? (y/n)\n>>");
+        char choice;
+        scanf(" %c", &choice);
+        if(tolower(choice) == 'y'){
+            lookup();
+        }
+        
+    return 1;
 }
 
 // Function to edit a password
@@ -178,7 +254,7 @@ int generate(int len){
    }
    
    password[len] = '\0'; // null terminate the string
-   printf("Generated Password: %s\n", password);
+   printf("Generated Password: %s\n",password);
    return 0;
    }
 
