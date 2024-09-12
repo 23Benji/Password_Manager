@@ -62,13 +62,25 @@ if (PassFile == NULL) {
         do {
             system("clear");  // Clear the screen
             printTitle();  // Print the title
+            printf(YEL"\n\nWelcome to the Password Manager!--Version 1.0--\n\n"reset);
+
             printf(RED"Please select an option:"reset"\n\n");
-            printf(BLU"-[1]---Add Password\n\n");
-            printf("-[2]---Lookup Password\n\n");
-            printf("-[3]--Edit Password\n\n");
-            printf("-[4]--Delete Password\n\n");
-            printf("-[5]--Generate Password\n\n"reset);
+            printf(BLU"  @\n");
+            printf("  |\n");
+            printf("-[1]--Add Password\n");
+            printf("  |\n");
+            printf("-[2]--Lookup Password\n");
+            printf("  |\n");
+            printf("-[3]--Edit Password\n");
+            printf("  |\n");
+            printf("-[4]--Delete Password\n");
+            printf("  |\n");
+            printf("-[5]--Generate Password\n");
+            printf("  |\n");
+            printf("  |\n"reset);
             printf(RED"-[00]--Exit\n"reset);
+            printf(BLU"  |\n");            
+            printf("  @\n"reset);
 
             printf("-[");
             scanf(" %c", &choice);  //Scan choice and remove space before %c to ignore previous newline
@@ -101,7 +113,9 @@ if (PassFile == NULL) {
                 fflush(stdin);  // Clear the input buffer
                 break;
             case '0':
-                printf(GRN"Thank you for using the Password Manager!\n");
+                system("clear");  // Clear the screen
+                printTitle();  // Print the title
+                printf(GRN"\n\nThank you for using the Password Manager!\n");
                 printf("See You soon! :D\n"reset);
                 return 0;
             default:
@@ -127,45 +141,76 @@ int printTitle(void){
     printf("                                                                            |___/           \n");
     printf(reset"\n");
 
-    printf(YEL"Welcome to the Password Manager!\n\n"reset); 
-
-
     return 0;
 }
 
 // Function to add a new password
-int add(void){
+int add(void) {
+    char line[MAX_LINE_LENGTH];
+    char choice;
 
-
+    // Ask the user for the website name
     printf("Enter website name: ");
     scanf("%s", cred.website);
-    fprintf(PassFile, "Website: %s", cred.website);
 
+    // Rewind the file to the beginning for checking
+    rewind(PassFile);
+
+    // Check if the website already exists
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            websitePos += 9;  // Move 9 characters forward to the website name
+
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            if (strcmp(websiteInLine, cred.website) == 0) {
+                // If the website is already found
+                printf(RED"\nWebsite '%s' already exists!\n"reset, cred.website);
+                
+                 printf("Try another Website? (y/n)\n>>");
+                char choice;
+                scanf(" %c", &choice);
+                if(tolower(choice) == 'y'){
+                    add();
+                }else{
+                    return 0;
+                }
+                
+ 
+                
+                
+            }
+        }
+    }
+
+    // If the website does not exist, proceed to add the new credential
     printf("Enter username: ");
     scanf("%s", cred.username);
-    fprintf(PassFile, "|Username: %s", cred.username);
-
+    fprintf(PassFile, "Website: %s|Username: %s", cred.website, cred.username);
 
     printf("Enter password: ");
     disableEcho();  // Disable terminal echoing
     scanf("%s", cred.password);
     enableEcho();  // Enable terminal echoing
-    caesarCipher(cred.password, shiftKey, 1); // Encrypt the password using Caesar cipher
+    caesarCipher(cred.password, shiftKey, 1);  // Encrypt the password using Caesar cipher
     fprintf(PassFile, "|Password: %s\n", cred.password);
 
-    fflush(PassFile); // Clear the file buffer
+    fflush(PassFile);  // Flush the file buffer
 
-    printf("\n");
     printf(GRN"\nPassword added successfully!\n"reset);
-    printf("Add another password? (y/n)\n>>");
-    char choice;
+
+    // Ask the user if they want to add another password
+    printf("Add another password? (y/n)\n>> ");
     scanf(" %c", &choice);
-    if(tolower(choice) == 'y'){
-        add();
+    if (tolower(choice) == 'y') {
+        add();  // Call add again for the next password
     }
 
-
+    return 0;
 }
+
 
 // Function to lookup a password
 int lookup(void) {
