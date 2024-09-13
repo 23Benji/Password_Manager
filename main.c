@@ -210,8 +210,6 @@ int add(void) {
     return pressAnyKey();
 }
 
-
-
 // Function to lookup a password
 int lookup(void) {
     system("clear");  // Clear the screen
@@ -271,18 +269,147 @@ int lookup(void) {
             lookup();
         }
         
-    return 1;
+    return 0;
 }
 
 // Function to edit a password
-int edit(void){
+int edit(void) {
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
 
+    char searchWebsite[50];  // Website to search for
+    char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
+    char tempFileName[] = "TempPassFile.txt";
+    FILE *tempFile = fopen(tempFileName, "w");  // Temporary file for writing updated data
+
+    if (tempFile == NULL) {
+        printf("Error opening temporary file!\n");
+        return 1;
+    }
+
+    // Ask the user for the website name
+    printf("Enter the website name to edit: ");
+    scanf("%s", searchWebsite);
+
+    // Rewind the file to the beginning
+    rewind(PassFile);
+
+    int found = 0;  // Flag to check if the website was found
+
+    // Loop through each line in the file
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            websitePos += 9;  // Move 9 characters forward to the website name
+
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            if (strcmp(websiteInLine, searchWebsite) == 0) {
+                found = 1;
+
+                // Ask for new credentials
+                printf("Enter new username: ");
+                scanf("%s", cred.username);
+
+                printf("Enter new password: ");
+                disableEcho();
+                scanf("%s", cred.password);
+                enableEcho();
+
+                // Encrypt the new password
+                caesarCipher(cred.password, shiftKey, 1);
+
+                // Write updated credentials to the temp file
+                fprintf(tempFile, "Website: %s|Username: %s|Password: %s\n", websiteInLine, cred.username, cred.password);
+                printf(GRN"\nCredentials updated successfully!\n"reset);
+            } else {
+                // Copy lines that do not match the website
+                fputs(line, tempFile);
+            }
+        } else {
+            fputs(line, tempFile);
+        }
+    }
+
+    if (!found) {
+        printf(RED"Website not found!\n"reset);
+    }
+
+    fclose(tempFile);
+    fclose(PassFile);
+    remove("PassC.txt");
+    rename(tempFileName, "PassC.txt");
+
+    // Reopen the password file for future operations
+    PassFile = fopen("PassC.txt", "a+");
+
+    return pressAnyKey();
 }
+
+
 
 // Function to delete a password
-int delete(void){
+int delete(void) {
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
 
+    char searchWebsite[50];  // Website to search for
+    char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
+    char tempFileName[] = "TempPassFile.txt";
+    FILE *tempFile = fopen(tempFileName, "w");  // Temporary file for writing updated data
+    FILE *currentFile = fopen("PassC.txt", "r");  // Open the current file for reading
+    int found = 0;  // Flag to check if the website was found
+
+    if (tempFile == NULL || currentFile == NULL) {
+        printf("Error opening file!\n");
+        if (tempFile) fclose(tempFile);
+        if (currentFile) fclose(currentFile);
+        return 1;
+    }
+
+    // Ask the user for the website name to delete
+    printf("Enter the website name to delete: ");
+    scanf("%s", searchWebsite);
+
+    // Loop through each line in the current file
+    while (fgets(line, MAX_LINE_LENGTH, currentFile) != NULL) {
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            websitePos += 9;  // Move 9 characters forward to the website name
+
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            if (strcmp(websiteInLine, searchWebsite) == 0) {
+                // If the website is found, do not write this line to the temp file
+                found = 1;
+                printf(GRN"Credentials for '%s' deleted successfully!\n"reset, searchWebsite);
+                continue;  // Skip writing this line
+            }
+        }
+        // Write the line to the temp file if it does not match the website
+        fputs(line, tempFile);
+    }
+
+    if (!found) {
+        printf(RED"Website not found!\n"reset);
+    }
+
+    fclose(tempFile);
+    fclose(currentFile);
+
+    // Remove the original file and rename the temp file to the original file name
+    remove("PassC.txt");
+    rename(tempFileName, "PassC.txt");
+
+    // Reopen the password file for future operations
+    PassFile = fopen("PassC.txt", "a+");
+
+    return pressAnyKey();
 }
+
+
 
 // Function to generate a password
 int generate(void){
@@ -363,7 +490,9 @@ void enableEcho() {
 // Function to pause the program and wait for the user to press a key
 int pressAnyKey(void) {
     printf(BLU"\nPress ENTER to go back to Main Menu..."reset);
+    disableEcho();  // Disable terminal echoing
     getchar();
     getchar();
+    enableEcho();  // Enable terminal echoing
     return 0;
 }
