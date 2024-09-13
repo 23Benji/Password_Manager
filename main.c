@@ -142,46 +142,54 @@ int printTitle(void){
 
 // Function to add a new password
 int add(void) {
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+
     char line[MAX_LINE_LENGTH];
     char choice;
 
-    // Ask the user for the website name
-    printf("Enter website name: ");
-    scanf("%s", cred.website);
+    while (1) {  // Loop until a new, non-duplicate website is entered
+        // Ask the user for the website name
+        printf("\n\nEnter website name: ");
+        scanf("%s", cred.website);
 
-    // Rewind the file to the beginning for checking
-    rewind(PassFile);
+        // Rewind the file to the beginning for checking
+        rewind(PassFile);
 
-    // Check if the website already exists
-    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
-        char *websitePos = strstr(line, "Website: ");
-        if (websitePos != NULL) {
-            websitePos += 9;  // Move 9 characters forward to the website name
+        // Flag to check if the website already exists
+        int websiteExists = 0;
 
-            char websiteInLine[50];
-            sscanf(websitePos, "%[^|]", websiteInLine);
+        // Check if the website already exists
+        while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+            char *websitePos = strstr(line, "Website: ");
+            if (websitePos != NULL){
+                websitePos += 9;  // Move 9 characters forward to the website name
 
-            if (strcmp(websiteInLine, cred.website) == 0) {
-                // If the website is already found
-                printf(RED"\nWebsite '%s' already exists!\n"reset, cred.website);
-                
-                 printf("Try another Website? (y/n)\n>>");
-                char choice;
-                scanf(" %c", &choice);
-                if(tolower(choice) == 'y'){
-                    add();
-                }else{
-                    return 0;
+                char websiteInLine[50];
+                sscanf(websitePos, "%[^|]", websiteInLine);
+
+                if (strcmp(websiteInLine, cred.website) == 0) {
+                    // If the website is already found
+                    printf(RED"\nWebsite '%s' already exists!\n"reset, cred.website);
+
+                    printf("Try another Website? (y/n)\n>>");
+                    scanf(" %c", &choice);
+                    if (tolower(choice) == 'n') {
+                        return 0;  // Exit if user does not want to try again
+                    }
+                    websiteExists = 1;  // Flag that the website exists
+                    break;  // Break out of the inner while loop
                 }
-                
- 
-                
-                
             }
+        }
+
+        // If the website does not exist, break out of the loop
+        if (!websiteExists) {
+            break;
         }
     }
 
-    // If the website does not exist, proceed to add the new credential
+    // Proceed to add the new credential
     printf("Enter username: ");
     scanf("%s", cred.username);
     fprintf(PassFile, "Website: %s|Username: %s", cred.website, cred.username);
@@ -194,14 +202,21 @@ int add(void) {
     fprintf(PassFile, "|Password: %s\n", cred.password);
 
     fflush(PassFile);  // Flush the file buffer
+    
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
 
-    printf(GRN"\nPassword added successfully!\n"reset);
-    return(pressAnyKey());
+    printf(GRN"\n\nPassword added successfully!\n"reset);
+    return pressAnyKey();
 }
+
 
 
 // Function to lookup a password
 int lookup(void) {
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+
     char searchWebsite[50];  // Website to search for
     char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
 
