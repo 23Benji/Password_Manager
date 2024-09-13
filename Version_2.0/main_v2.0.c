@@ -7,7 +7,7 @@
 //#include <colorCodes.h>
 #define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
 #define MAX_LINE_LENGTH 256 // Maximum length of a line in the input file
-
+#define VERSION "2.0" // Version of the program
 
 
 
@@ -17,7 +17,7 @@ struct Credential {
     char password[35];  // Encrypted password
 };
 
-// Function prototypes
+//Function prototypes
 int add(void);
 int lookup(void);
 int edit(void);
@@ -28,7 +28,8 @@ void caesarCipher(char *text, int shift, int encrypt);
 void disableEcho();
 void enableEcho();
 int pressAnyKey(void);
-
+int about_project(void);
+int about_developer(void);
 
 // Global variable for storing credentials
 struct Credential cred;
@@ -63,7 +64,8 @@ if (PassFile == NULL) {
         do {
             system("clear");  // Clear the screen
             printTitle();  // Print the title
-            printf(YEL"\n\nWelcome to the Password Manager!--Version 1.0--\n\n"reset);
+            printf(YEL"\n\nWelcome to the Password Manager!\n\n"reset);
+
 
             printf(RED"Please select an option:"reset"\n\n");
             printf(BLU"  @\n");
@@ -78,6 +80,10 @@ if (PassFile == NULL) {
             printf("  |\n");
             printf("-[5]--Generate Password\n");
             printf("  |\n");
+            printf("-[6]--About the Program\n");
+            printf("  |\n");
+            printf("-[7]--About the Developer\n");
+            printf("  |\n");                        
             printf("  |\n"reset);
             printf(RED"-[00]--Exit\n"reset);
             printf(BLU"  |\n");            
@@ -85,7 +91,7 @@ if (PassFile == NULL) {
 
             printf("-[");
             scanf(" %c", &choice);  //Scan choice and remove space before %c to ignore previous newline
-        } while (choice != '1' && choice != '2' && choice != '3' && choice != '4' && choice != '5' && choice != '0');
+        } while (choice != '1' && choice != '2' && choice != '3' && choice != '4' && choice != '5' && choice != '6' && choice != '7' &&choice != '0');
 
         switch(choice) {
             case '1':
@@ -106,6 +112,14 @@ if (PassFile == NULL) {
                 break;
             case '5':
                 generate();
+                fflush(stdin);  // Clear the input buffer
+                break;
+            case '6':
+                about_project();
+                fflush(stdin);  // Clear the input buffer
+                break;
+            case '7':
+                about_developer();
                 fflush(stdin);  // Clear the input buffer
                 break;
             case '0':
@@ -134,7 +148,7 @@ int printTitle(void){
     printf("     | |  | (_| \\__ \\__ \\\\ V  V / (_) | | | (_| | | |  | | (_| | | | | (_| | (_| |  __/ |   \n");
     printf("     |_|   \\__,_|___/___/ \\_/\\_/ \\___/|_|  \\__,_| |_|  |_|\___,_|_| |_|\\__,_|\\__,_|\\___|_|   \n");
     printf("                                                                             __/ |          \n");
-    printf("                                                                            |___/      By: Benji Paun     \n");
+    printf("                                                                            |___/      V:%s     \n", VERSION);
     printf(reset"\n");
 
     return 0;
@@ -347,8 +361,6 @@ int edit(void) {
     return pressAnyKey();
 }
 
-
-
 // Function to delete a password
 int delete(void) {
     system("clear");  // Clear the screen
@@ -408,8 +420,6 @@ int delete(void) {
 
     return pressAnyKey();
 }
-
-
 
 // Function to generate a password
 int generate(void){
@@ -496,3 +506,31 @@ int pressAnyKey(void) {
     enableEcho();  // Enable terminal echoing
     return 0;
 }
+
+// Function to print the about project page
+int about_project(void){
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+
+    printf("About the Project:\n\nThis is a Password Manager created by Benji Paun. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
+    "\nIt is a simple program that allows you to store and manage your passwords securely."
+    "\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
+    "\nYou can also "YEL"generate"reset" a random password of your desired length."
+    "\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
+    "\n(Note: The source code is in "YEL"C"reset" and not in C++ as the project is in its early stages.\n\n");
+
+    return pressAnyKey();
+}
+
+// Function to print the about the developer page
+int about_developer(void){
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+    
+    printf("About the Developer:\n\n");
+    printf("This Password Manager created by Me, "YEL"Benji"reset".\n");
+    printf("I am a 17 year old student from "YEL"Bolzano, Italy"reset".\n");
+    printf(YEL"More about me and my Projectss"reset" can be found in my Githib profile:"YEL"https://github.com/23Benji"reset"\n");
+    return pressAnyKey();
+}
+
