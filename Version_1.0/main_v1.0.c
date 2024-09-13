@@ -518,7 +518,8 @@ int about_project(void){
     "\nThe program is "YEL"still in development"reset".\n"
     "\nPassword Manager is a simple program that allows you to "YEL"store your passwords securely"reset" and manage them easily."
     "\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
-    "\nYou can also "YEL"generate"reset" a random password of your desired length."
+    "\nYou can find the "YEL"saved passwords"reset" in a the password Txt-file named "YEL"PassC.txt"reset". "YEL"Passwords"reset" are "YEL"encrypted"reset", so they are "YEL"not readable"reset"."
+    "\nYou can also "YEL"generate"reset" a random password of your desired length, ready to be copied and used."
     "\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
     "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and an "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
     "\n\n"RED"Note:"reset, VERSION);
