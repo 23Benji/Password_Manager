@@ -7,16 +7,15 @@ A simple and secure Password Manager built in C. This tool allows you to manage 
 - **Edit a password**: Update or modify stored credentials.
 - **Delete a password**: Remove unneeded credentials.
 - **Generate a password**: Create strong, random passwords.
-- **More features coming soon**: Future updates will expand functionality.
-![Screenshot](img/Screenshot2.png)
+- **More features coming soon**: Future updates will expand functionality (Version 2.0).
 
 ## How It Works
-The Password Manager encrypts passwords and saves them into a file, ensuring your data is secure. You can access and manage your passwords through a user-friendly interface.
+The Password Manager encrypts passwords and saves them into a file, ensuring your data is secure. You can access and manage your passwords through a simple and user-friendly interface.
 
 ### Planned Enhancements
 - Improved encryption methods
 - Password strength analysis
-- Cross-platform support
+- Secure Password Managment 
 
 ## Installation
 To use the Password Manager, you’ll need a C compiler installed.
@@ -29,7 +28,16 @@ To use the Password Manager, you’ll need a C compiler installed.
     ```bash
     cd password-manager
     ```
-3. Run the Makefile:
+2. Navigate to the Verion folder:
+    ```bash
+    cd Version_1.0
+    ```
+    or
+   
+     ```bash
+    cd Version_2.0
+    ```
+4. Run the Makefile:
     ```bash
     make
     ```
