@@ -5,6 +5,7 @@
 #include<termios.h>
 #include<unistd.h>
 //#include <colorCodes.h>
+
 #define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
 #define MAX_LINE_LENGTH 256 // Maximum length of a line in the input file
 #define VERSION "2.0" // Version of the program
@@ -16,20 +17,6 @@ struct Credential {
     char username[35];  // Username
     char password[35];  // Encrypted password
 };
-
-//Function prototypes
-int add(void);
-int lookup(void);
-int edit(void);
-int delete(void);
-int generate(void);
-int printTitle(void);
-void caesarCipher(char *text, int shift, int encrypt);
-void disableEcho();
-void enableEcho();
-int pressAnyKey(void);
-int about_project(void);
-int about_developer(void);
 
 // Global variable for storing credentials
 struct Credential cred;
@@ -288,13 +275,13 @@ int lookup(void) {
 
 // Function to edit a password
 int edit(void) {
-    system("clear");  // Clear the screen
-    printTitle();  // Print the title
+    system("clear");
+    printTitle();
 
-    char searchWebsite[50];  // Website to search for
-    char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
+    char searchWebsite[50];
+    char line[MAX_LINE_LENGTH];
     char tempFileName[] = "TempPassFile.txt";
-    FILE *tempFile = fopen(tempFileName, "w");  // Temporary file for writing updated data
+    FILE *tempFile = fopen(tempFileName, "w");
 
     if (tempFile == NULL) {
         printf("Error opening temporary file!\n");
@@ -305,23 +292,44 @@ int edit(void) {
     printf("Enter the website name to edit: ");
     scanf("%s", searchWebsite);
 
+    // Validate the website and password
+    char providedPassword[35];
+    int tries = 0;
+    int valid = 0;
+
+    while (tries < 3) {
+        printf("Enter the current password: ");
+        disableEcho();
+        scanf("%s", providedPassword);
+        enableEcho();
+
+        if (validatePassword(searchWebsite, providedPassword)) {
+            valid = 1;
+            break;
+        } else {
+            printf(RED"\nIncorrect password. Try again.\n"reset);
+            tries++;
+        }
+    }
+
+    if (!valid) {
+        printf(RED"To many failed attempts. Try again later.\n"reset);
+        fclose(tempFile);
+        return pressAnyKey();
+    }
+
     // Rewind the file to the beginning
     rewind(PassFile);
-
-    int found = 0;  // Flag to check if the website was found
 
     // Loop through each line in the file
     while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
         char *websitePos = strstr(line, "Website: ");
         if (websitePos != NULL) {
-            websitePos += 9;  // Move 9 characters forward to the website name
-
+            websitePos += 9;
             char websiteInLine[50];
             sscanf(websitePos, "%[^|]", websiteInLine);
 
             if (strcmp(websiteInLine, searchWebsite) == 0) {
-                found = 1;
-
                 // Ask for new credentials
                 printf("Enter new username: ");
                 scanf("%s", cred.username);
@@ -346,10 +354,6 @@ int edit(void) {
         }
     }
 
-    if (!found) {
-        printf(RED"Website not found!\n"reset);
-    }
-
     fclose(tempFile);
     fclose(PassFile);
     remove("PassC.txt");
@@ -363,15 +367,15 @@ int edit(void) {
 
 // Function to delete a password
 int delete(void) {
-    system("clear");  // Clear the screen
-    printTitle();  // Print the title
+    system("clear");
+    printTitle();
 
-    char searchWebsite[50];  // Website to search for
-    char line[MAX_LINE_LENGTH];  // Buffer to store each line from the file
+    char searchWebsite[50];
+    char line[MAX_LINE_LENGTH];
     char tempFileName[] = "TempPassFile.txt";
-    FILE *tempFile = fopen(tempFileName, "w");  // Temporary file for writing updated data
-    FILE *currentFile = fopen("PassC.txt", "r");  // Open the current file for reading
-    int found = 0;  // Flag to check if the website was found
+    FILE *tempFile = fopen(tempFileName, "w");
+    FILE *currentFile = fopen("PassC.txt", "r");
+    int found = 0;
 
     if (tempFile == NULL || currentFile == NULL) {
         printf("Error opening file!\n");
@@ -384,12 +388,38 @@ int delete(void) {
     printf("Enter the website name to delete: ");
     scanf("%s", searchWebsite);
 
+    // Validate the website and password
+    char providedPassword[35];
+    int tries = 0;
+    int valid = 0;
+
+    while (tries < 3) {
+        printf("Enter the current password: ");
+        disableEcho();
+        scanf("%s", providedPassword);
+        enableEcho();
+
+        if (validatePassword(searchWebsite, providedPassword)) {
+            valid = 1;
+            break;
+        } else {
+            printf(RED"\nIncorrect password. Try again.\n"reset);
+            tries++;
+        }
+    }
+
+    if (!valid) {
+        printf(RED"To many failed attempts. Try again later.\n"reset);
+        fclose(tempFile);
+        fclose(currentFile);
+        return pressAnyKey();
+    }
+
     // Loop through each line in the current file
     while (fgets(line, MAX_LINE_LENGTH, currentFile) != NULL) {
         char *websitePos = strstr(line, "Website: ");
         if (websitePos != NULL) {
-            websitePos += 9;  // Move 9 characters forward to the website name
-
+            websitePos += 9;
             char websiteInLine[50];
             sscanf(websitePos, "%[^|]", websiteInLine);
 
@@ -397,10 +427,9 @@ int delete(void) {
                 // If the website is found, do not write this line to the temp file
                 found = 1;
                 printf(GRN"Credentials for '%s' deleted successfully!\n"reset, searchWebsite);
-                continue;  // Skip writing this line
+                continue;
             }
         }
-        // Write the line to the temp file if it does not match the website
         fputs(line, tempFile);
     }
 
@@ -411,11 +440,9 @@ int delete(void) {
     fclose(tempFile);
     fclose(currentFile);
 
-    // Remove the original file and rename the temp file to the original file name
     remove("PassC.txt");
     rename(tempFileName, "PassC.txt");
 
-    // Reopen the password file for future operations
     PassFile = fopen("PassC.txt", "a+");
 
     return pressAnyKey();
@@ -481,6 +508,42 @@ void caesarCipher(char *text, int shift, int encrypt) {
     }
 }
 
+// Function to validate the password for a given website
+int validatePassword(const char *website, const char *password) {
+    char line[MAX_LINE_LENGTH];
+    rewind(PassFile);
+
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            websitePos += 9;
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            if (strcmp(websiteInLine, website) == 0) {
+                char *passwordPos = strstr(line, "Password: ");
+                if (passwordPos != NULL) {
+                    passwordPos += 10;
+                    char storedPassword[35];
+                    sscanf(passwordPos, "%s", storedPassword);
+
+                    // Decrypt the stored password
+                    caesarCipher(storedPassword, shiftKey, 0);
+
+                    // Check if the provided password matches the stored password
+                    if (strcmp(password, storedPassword) == 0) {
+                        return 1;  // Password is correct
+                    } else {
+                        return 0;  // Password is incorrect
+                    }
+                }
+            }
+        }
+    }
+
+    return 0;  // Website not found
+}
+
 // Function to disable terminal echoing
 void disableEcho() {
     struct termios tty;
@@ -513,11 +576,18 @@ int about_project(void){
     printTitle();  // Print the title
 
     printf("About the Project:\n\nThis is a Password Manager created by Benji Paun. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
-    "\nIt is a simple program that allows you to store and manage your passwords securely."
+    "You are currently using Version "YEL"%s"reset". This is the first version of the program."
+    "\nIn this version, the "YEL"security of the passwords"reset" is "YEL"guranteed"reset", but the "YEL"Managment of the passwords"reset" is "YEL"not"reset"."
+    "\nThe program is "YEL"still in development"reset".\n"
+    "\nPassword Manager is a simple program that allows you to "YEL"store your passwords securely"reset" and manage them easily."
     "\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
-    "\nYou can also "YEL"generate"reset" a random password of your desired length."
+    "\nYou can find the "YEL"saved passwords"reset" in a the password Txt-file named "YEL"PassC.txt"reset". "YEL"Passwords"reset" are "YEL"encrypted"reset", so they are "YEL"not readable"reset"."
+    "\nYou can also "YEL"generate"reset" a random password of your desired length, ready to be copied and used."
     "\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
-    "\n(Note: The source code is in "YEL"C"reset" and not in C++ as the project is in its early stages.\n\n");
+    "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and an "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
+    "\n\n"RED"Note:"reset, VERSION);
+    printf("If your concernt is about the security of the Managment of your passwords, please feel free to check and test"
+    "\nthe latest version of the program and report any security vulnerabilities to me under the"YEL"Github/issues"reset".\n\n");
 
     return pressAnyKey();
 }
