@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include<ctype.h>
 #include<time.h>
 #include<termios.h>
@@ -9,14 +10,33 @@
 #define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
 #define MAX_LINE_LENGTH 256 // Maximum length of a line in the input file
 #define VERSION "2.0" // Version of the program
+#define PASSCODE "1111"  // Replace this with your desired passcode
 
 
+
+// Function prototypes
+int printTitle(void);
+int add(void);
+int lookup(void);
+int edit(void);
+int delete(void);
+int generate(void);
+void caesarCipher(char *str, int key, int encrypt);
+int vaidatePassword(char *password);
+void disableEcho(void);
+void enableEcho(void);
+int pressAnyKey(void);
+int about_project(void);
+int about_developer(void);
+int checkWebsiteExists(const char *website);
+int authenticate(void);
 
 struct Credential {
     char website[50];  // Website name
     char username[35];  // Username
     char password[35];  // Encrypted password
 };
+
 
 // Global variable for storing credentials
 struct Credential cred;
@@ -36,7 +56,11 @@ FILE *PassFile;
 
 int main(void){
 
-    
+    system("clear");  // Clear the screen
+    printTitle();  // Print the title
+    if (!authenticate()) {
+        return 1; // Exit program if authentication fails
+    }
 
 PassFile = fopen("PassC.txt", "a+");  // Open for appending and reading, create if it doesn't exist
 
@@ -146,7 +170,6 @@ int add(void) {
     system("clear");  // Clear the screen
     printTitle();  // Print the title
 
-    char line[MAX_LINE_LENGTH];
     char choice;
 
     while (1) {  // Loop until a new, non-duplicate website is entered
@@ -154,39 +177,17 @@ int add(void) {
         printf("\n\nEnter website name: ");
         scanf("%s", cred.website);
 
-        // Rewind the file to the beginning for checking
-        rewind(PassFile);
+        // Check if the website already exists using checkWebsite function
+        if (checkWebsiteExists(cred.website)) {
+            printf(RED"\nWebsite '%s' already exists!\n"reset, cred.website);
 
-        // Flag to check if the website already exists
-        int websiteExists = 0;
-
-        // Check if the website already exists
-        while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
-            char *websitePos = strstr(line, "Website: ");
-            if (websitePos != NULL){
-                websitePos += 9;  // Move 9 characters forward to the website name
-
-                char websiteInLine[50];
-                sscanf(websitePos, "%[^|]", websiteInLine);
-
-                if (strcmp(websiteInLine, cred.website) == 0) {
-                    // If the website is already found
-                    printf(RED"\nWebsite '%s' already exists!\n"reset, cred.website);
-
-                    printf("Try another Website? (y/n)\n>>");
-                    scanf(" %c", &choice);
-                    if (tolower(choice) == 'n') {
-                        return 0;  // Exit if user does not want to try again
-                    }
-                    websiteExists = 1;  // Flag that the website exists
-                    break;  // Break out of the inner while loop
-                }
+            printf("Try another Website? (y/n)\n>>");
+            scanf(" %c", &choice);
+            if (tolower(choice) == 'n') {
+                return 0;  // Exit if user does not want to try again
             }
-        }
-
-        // If the website does not exist, break out of the loop
-        if (!websiteExists) {
-            break;
+        } else {
+            break;  // Website doesn't exist, proceed to add credentials
         }
     }
 
@@ -223,6 +224,30 @@ int lookup(void) {
     printf("Enter the website name: ");
     scanf("%s", searchWebsite);
 
+    // Check if the website exists
+    if (!checkWebsiteExists(searchWebsite)) {
+        printf(RED"Website not found!\n"reset);
+        printf("Lookup another password? (y/n)\n>>");
+        char choice;
+        scanf(" %c", &choice);
+        if (tolower(choice) == 'y') {
+            return lookup();  // Recursive call to lookup again
+        }
+        return 0;
+    }
+
+    char inputPasscode[35];
+    int tries = 0;
+    int maxTries = 3; // Number of allowed attempts
+
+    while (tries < maxTries) {
+        printf("Enter passcode to access the Mode: ");
+        disableEcho();
+        scanf("%s", inputPasscode);
+        enableEcho();
+
+        if (strcmp(inputPasscode, PASSCODE) == 0) {
+    
     // Rewind the file to the beginning
     rewind(PassFile);
 
@@ -254,23 +279,23 @@ int lookup(void) {
                     caesarCipher(encryptedPassword, shiftKey, 0);  // 0 to decrypt
 
                     // Output the decrypted password
-                    printf(GRN"Decrypted password: %s\n"reset, encryptedPassword);
-                    return(pressAnyKey());
+                    printf(GRN"\n\nDecrypted password: %s\n"reset, encryptedPassword);
+                    return pressAnyKey();
                 }
             }
         }
     }
-
-    // If no matching website was found
-    printf(RED"Website not found!\n"reset);
-    printf("Lookup another password? (y/n)\n>>");
-        char choice;
-        scanf(" %c", &choice);
-        if(tolower(choice) == 'y'){
-            lookup();
+        } else {
+            printf(RED"\nIncorrect passcode. Try again.\n"reset);
+            tries++;
         }
-        
-    return 0;
+    }
+
+    printf(RED"Too many failed attempts. Access denied.\n"reset);
+    return pressAnyKey();
+
+    
+
 }
 
 // Function to edit a password
@@ -292,7 +317,14 @@ int edit(void) {
     printf("Enter the website name to edit: ");
     scanf("%s", searchWebsite);
 
-    // Validate the website and password
+    // Check if the website exists
+    if (!checkWebsiteExists(searchWebsite)) {
+        printf(RED"Website not found.\n"reset);
+        fclose(tempFile);
+        return pressAnyKey();
+    }
+
+    // Validate the current password
     char providedPassword[35];
     int tries = 0;
     int valid = 0;
@@ -313,7 +345,7 @@ int edit(void) {
     }
 
     if (!valid) {
-        printf(RED"To many failed attempts. Try again later.\n"reset);
+        printf(RED"Too many failed attempts. Try again later.\n"reset);
         fclose(tempFile);
         return pressAnyKey();
     }
@@ -331,7 +363,7 @@ int edit(void) {
 
             if (strcmp(websiteInLine, searchWebsite) == 0) {
                 // Ask for new credentials
-                printf("Enter new username: ");
+                printf("\n\nEnter new username: ");
                 scanf("%s", cred.username);
 
                 printf("Enter new password: ");
@@ -344,7 +376,7 @@ int edit(void) {
 
                 // Write updated credentials to the temp file
                 fprintf(tempFile, "Website: %s|Username: %s|Password: %s\n", websiteInLine, cred.username, cred.password);
-                printf(GRN"\nCredentials updated successfully!\n"reset);
+                printf(GRN"\n\nCredentials updated successfully!\n"reset);
             } else {
                 // Copy lines that do not match the website
                 fputs(line, tempFile);
@@ -375,7 +407,6 @@ int delete(void) {
     char tempFileName[] = "TempPassFile.txt";
     FILE *tempFile = fopen(tempFileName, "w");
     FILE *currentFile = fopen("PassC.txt", "r");
-    int found = 0;
 
     if (tempFile == NULL || currentFile == NULL) {
         printf("Error opening file!\n");
@@ -388,7 +419,15 @@ int delete(void) {
     printf("Enter the website name to delete: ");
     scanf("%s", searchWebsite);
 
-    // Validate the website and password
+    // Check if the website exists
+    if (!checkWebsiteExists(searchWebsite)) {
+        printf(RED"Website not found.\n"reset);
+        fclose(tempFile);
+        fclose(currentFile);
+        return pressAnyKey();
+    }
+
+    // Validate the current password
     char providedPassword[35];
     int tries = 0;
     int valid = 0;
@@ -409,13 +448,14 @@ int delete(void) {
     }
 
     if (!valid) {
-        printf(RED"To many failed attempts. Try again later.\n"reset);
+        printf(RED"Too many failed attempts. Try again later.\n"reset);
         fclose(tempFile);
         fclose(currentFile);
         return pressAnyKey();
     }
 
     // Loop through each line in the current file
+    int found = 0;
     while (fgets(line, MAX_LINE_LENGTH, currentFile) != NULL) {
         char *websitePos = strstr(line, "Website: ");
         if (websitePos != NULL) {
@@ -440,9 +480,11 @@ int delete(void) {
     fclose(tempFile);
     fclose(currentFile);
 
+    // Replace the old file with the new one
     remove("PassC.txt");
     rename(tempFileName, "PassC.txt");
 
+    // Reopen the password file for future operations
     PassFile = fopen("PassC.txt", "a+");
 
     return pressAnyKey();
@@ -602,5 +644,51 @@ int about_developer(void){
     printf("I am a 17 year old student from "YEL"Bolzano, Italy"reset".\n");
     printf(YEL"More about me and my Projectss"reset" can be found in my Githib profile:"YEL"https://github.com/23Benji"reset"\n");
     return pressAnyKey();
+}
+
+// Function to check if a website already exists in the password file
+int checkWebsiteExists(const char *website) {
+    char line[MAX_LINE_LENGTH];
+    rewind(PassFile);  // Rewind to the beginning of the file
+
+    // Loop through each line in the file
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        char *websitePos = strstr(line, "Website: ");
+        if (websitePos != NULL) {
+            websitePos += 9;  // Move 9 characters forward to get the website name
+            char websiteInLine[50];
+            sscanf(websitePos, "%[^|]", websiteInLine);
+
+            // Compare the website name
+            if (strcmp(websiteInLine, website) == 0) {
+                return 1;  // Website exists
+            }
+        }
+    }
+
+    return 0;  // Website does not exist
+}
+
+// Function to authenticate the user
+int authenticate(void) {
+    char inputPasscode[35];
+    int tries = 0;
+    int maxTries = 3; // Number of allowed attempts
+
+    while (tries < maxTries) {
+        printf("Enter passcode to access the program: ");
+        disableEcho();
+        scanf("%s", inputPasscode);
+        enableEcho();
+
+        if (strcmp(inputPasscode, PASSCODE) == 0) {
+            return 1; // Authentication successful
+        } else if (maxTries == 2) {
+            tries++;
+        }
+    }
+
+    printf(RED"\n\nToo many failed attempts. Access denied.\n"reset);
+    return 0; // Authentication failed
 }
 
