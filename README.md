@@ -1,24 +1,31 @@
 ![Screenshot](img/Screenshot1.png)
-A simple and secure Password Manager built in C. This tool allows you to manage your passwords efficiently, with features like adding, viewing, editing, and deleting credentials. It also includes a password generator for creating strong, random passwords.
+# Password Manager
+
+A command-line-based password manager written in C. This application allows users to securely store, manage, and retrieve their passwords. It also includes functionalities such as adding new passwords, editing existing ones, deleting passwords, and generating strong random passwords. All passwords are encrypted and stored in a text file for security.
 
 ## Features
-- **Add a password**: Store usernames, passwords, and associated websites.
-- **View passwords**: Access and review your saved credentials.
-- **Edit a password**: Update or modify stored credentials.
-- **Delete a password**: Remove unneeded credentials.
-- **Generate a password**: Create strong, random passwords.
-- **More features coming soon**: Future updates will expand functionality (Version 2.0).
 
+- **Add Password:** Save a new password along with the associated website and username.
+- **View Passwords:** Search for and retrieve passwords based on the website name.
+- **Edit Password:** Modify existing password entries without revalidating the old password.
+- **Delete Password:** Remove saved passwords from the file.
+- **Generate Password:** Create a strong, random password to use for your accounts.
+- **Encryption:** All stored passwords are encrypted in the text file.
+
+  
 ## How It Works
-The Password Manager encrypts passwords and saves them into a file, ensuring your data is secure. You can access and manage your passwords through a simple and user-friendly interface.
 
-### Planned Enhancements
-- Improved encryption methods
-- Password strength analysis
-- Secure Password Managment 
+1. The password manager allows you to:
+   - Add a new password entry by specifying a website, username, and password.
+   - Edit an existing entry by searching for the website name and updating the details.
+   - View all your saved passwords or search for a specific one by website.
+   - Delete passwords if they are no longer needed.
+   
+2. **Encryption**: Passwords are encrypted before being saved to the text file, ensuring that they are not stored in plain text.
 
-## Installation
-To use the Password Manager, you’ll need a C compiler installed.
+3. **Search Functionality**: Easily find passwords by searching for the website name.
+
+## Usage
 
 1. Clone the repository:
     ```bash
@@ -31,16 +38,26 @@ To use the Password Manager, you’ll need a C compiler installed.
 2. Navigate to the Verion folder:
     ```bash
     cd Version_1.0
-    ```
-    or
-   
+    ```   
      ```bash
     cd Version_2.0
+    ```
+   ```bash
+    cd Version_2.1
     ```
 4. Run the Makefile:
     ```bash
     make
     ```
-    
+## Future Enhancements
+   
+- **Password Strength Checker**: Implement a feature to assess the strength of user-provided passwords.
+- **Multiple File Support**: Allow users to manage different sets of passwords across multiple files.
+
+## Requirements
+
+- A **C compiler** (e.g., GCC)
+- **Basic understanding** of command-line usage
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
