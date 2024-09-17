@@ -470,19 +470,17 @@ int about_project(void){
     system("clear");  // Clear the screen
     printTitle();  // Print the title
 
-    printf("About the Project:\n\nThis is a Password Manager created by Benji Paun. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
-    "You are currently using Version "YEL"%s"reset". This is the first version of the program."
-    "\nIn this version, the "YEL"security of the passwords"reset" is "YEL"guranteed"reset", but the "YEL"Managment of the passwords"reset" is "YEL"not"reset"."
-    "\nThe program is "YEL"still in development"reset".\n"
-    "\nPassword Manager is a simple program that allows you to "YEL"store your passwords securely"reset" and manage them easily."
-    "\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
+    printf("About the Project:\n\nThis is a Password Manager created by Benji. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
+    "You are currently using Version "YEL"%s"reset". This is the "YEL"securest version"reset" of the program, implementing also Headers."
+    "\nIn this version, the "YEL"security of the passwords"reset" is "YEL"guranteed"reset" and the "YEL"Managment of the passwords"reset" is "YEL"also guranteed thanks to a LogIn Passcode"reset"."
+    "\nPassword Manager is a simple program that allows you to "YEL"store your passwords securely"reset" and manage them without worrying about security."
+    "\n\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
     "\nYou can find the "YEL"saved passwords"reset" in a the password Txt-file named "YEL"PassC.txt"reset". "YEL"Passwords"reset" are "YEL"encrypted"reset", so they are "YEL"not readable"reset"."
     "\nYou can also "YEL"generate"reset" a random password of your desired length, ready to be copied and used."
-    "\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
-    "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and an "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
+    "\n\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
+    "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and a "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
     "\n\n"RED"Note:"reset, VERSION);
-    printf("If your concernt is about the security of the Managment of your passwords, please feel free to check and test"
-    "\nthe latest version of the program and report any security vulnerabilities to me under the"YEL"Github/issues"reset".\n\n");
+    printf("If your concerned about the security of the Managment of your passwords or find any bugs, please do not hesitate to report any security vulnerabilities to me under the "YEL"Password_Manager/Issues"reset".\n\n");
 
     return pressAnyKey();
 }

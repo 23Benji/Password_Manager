@@ -91,8 +91,8 @@ if (PassFile == NULL) {
             case '0':
                 system("clear");  // Clear the screen
                 printTitle();  // Print the title
-                printf(GRN"\n\n❤ Thank you for using the Password Manager!\n");
-                printf("See You soon! :D\n"reset);
+                printf(GRN"\n❤ Thank you for using the Password Manager!\n");
+                printf("❤ Hope to see You soon! :D\n\n\n"reset);
                 return 0;
         }
         

@@ -512,7 +512,7 @@ int about_project(void){
     system("clear");  // Clear the screen
     printTitle();  // Print the title
 
-    printf("About the Project:\n\nThis is a Password Manager created by Benji Paun. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
+    printf("About the Project:\n\nThis is a Password Manager created by Benji. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
     "You are currently using Version "YEL"%s"reset". This is the first version of the program."
     "\nIn this version, the "YEL"security of the passwords"reset" is "YEL"guranteed"reset", but the "YEL"Managment of the passwords"reset" is "YEL"not"reset"."
     "\nThe program is "YEL"still in development"reset".\n"
