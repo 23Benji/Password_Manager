@@ -7,7 +7,7 @@ run:
 	./PasswordManager_v2.0
 
 clean:
-	rm PasswordManager_v2.0
+	rm PasswordManager_v2.0.o
 
 cleanall:
 	rm PasswordManager_v2.0 *.o

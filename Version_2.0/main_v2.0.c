@@ -5,7 +5,6 @@
 #include<time.h>
 #include<termios.h>
 #include<unistd.h>
-//#include <colorCodes.h>
 
 #define shiftKey 19 // Shift key for Caesar cipher encryption/decryption
 #define MAX_LINE_LENGTH 256 // Maximum length of a line in the input file
@@ -139,17 +138,15 @@ if (PassFile == NULL) {
                 printf(GRN"\n\n❤ Thank you for using the Password Manager!\n");
                 printf("See You soon! :D\n"reset);
                 return 0;
-            default:
-                printf(RED"Invalid choice. Please try again.\n"reset);
-                break;
         }
+        
     }
     fclose(PassFile);
     
     return 0;
 }
 
-// Function to print the title
+//Function to print the title
 int printTitle(void){
 
     printf(CYN"      _____                                    _   __  __                                  \n");
