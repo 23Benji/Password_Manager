@@ -1,63 +1,57 @@
-![Screenshot](img/Screenshot1.png)
-# Password Manager
+# AEGISCODE VAULT (Password Manager)
 
-A command-line-based password manager written in C. This application allows users to securely store, manage, and retrieve their passwords. It also includes functionalities such as adding new passwords, editing existing ones, deleting passwords, and generating strong random passwords. All passwords are encrypted and stored in a text file for security.
+A versatile Password Manager built in C, designed to securely manage your passwords with various features and enhancements over its versions. This tool allows you to add, view, edit, and delete credentials, with additional functionalities introduced in later versions.
 
-## Features
+## Features Overview
+- **Add Passwords**: Store new passwords for different websites.
+- **View Passwords**: Access and review your saved credentials.
+- **Edit Passwords**: Modify existing password entries.
+- **Delete Passwords**: Remove unneeded credentials.
+- **Generate Passwords**: Create new, random passwords.
+- **Export Functionality**: Export decrypted passcodes for backup and sharing.
+- **Access Code Protection**: Security with access codes required to start and use the program.
 
-- **Add Password:** Save a new password along with the associated website and username.
-- **View Passwords:** Search for and retrieve passwords based on the website name.
-- **Edit Password:** Modify existing password entries without revalidating the old password.
-- **Delete Password:** Remove saved passwords from the file.
-- **Generate Password:** Create a strong, random password to use for your accounts.
-- **Encryption:** All stored passwords are encrypted in the text file.
+## Version Highlights
 
-  
+### Version 1.0
+- **Core Functionalities**: Add, view, edit, delete, and generate passwords.
+- **Encryption**: Uses Caesar cipher for storing passwords securely.
+
+### Version 2.0
+- **Enhanced Security**: Introduces access code protection for starting the program and viewing passcodes.
+- **Existing Features**: Retains all features from Version 1.0 with added security measures.
+
+### Version 2.1
+- **Export Feature**: Adds functionality to export decrypted passwords to a text file.
+- **Existing Features**: Includes all features from Version 2.0 with the new export capability.
+
+### Version 3.0
+- **Project Renaming**: Rebranded as AegisCode Vault.
+- **Improved Security**: Enhanced encryption methods and overall security improvements.
+- **Existing Features**: Includes all features from Version 2.1 with upgraded security.
+
 ## How It Works
+The Password Manager encrypts passwords and saves them into a file, ensuring your data is secure. You can manage your passwords through a user-friendly interface, with encryption and export functionalities designed to protect and handle your data efficiently.
 
-1. The password manager allows you to:
-   - Add a new password entry by specifying a website, username, and password.
-   - Edit an existing entry by searching for the website name and updating the details.
-   - View all your saved passwords or search for a specific one by website.
-   - Delete passwords if they are no longer needed.
-   
-2. **Encryption**: Passwords are encrypted before being saved to the text file, ensuring that they are not stored in plain text.
-
-3. **Search Functionality**: Easily find passwords by searching for the website name.
-
-## Usage
+## Installation
+To use the Password Manager, you'll need a C compiler installed.
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/password-manager.git
+    git clone https://github.com/23Benji/Password_Manager.git
     ```
 2. Navigate to the project folder:
     ```bash
-    cd password-manager
+    cd Password_Manager
     ```
-2. Navigate to the Verion folder:
+3. Navigate to the desired Verion:
     ```bash
-    cd Version_1.0
-    ```   
-     ```bash
-    cd Version_2.0
+    cd Version_[Version]
     ```
-   ```bash
-    cd Version_2.1
-    ```
-4. Run the Makefile:
+4. Run the makefile:
     ```bash
     make
     ```
-## Future Enhancements
-   
-- **Password Strength Checker**: Implement a feature to assess the strength of user-provided passwords.
-- **Multiple File Support**: Allow users to manage different sets of passwords across multiple files.
-
-## Requirements
-
-- A **C compiler** (e.g., GCC)
-- **Basic understanding** of command-line usage
-
+    
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License. See the `LICENSE` file for details.
