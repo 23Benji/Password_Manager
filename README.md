@@ -13,19 +13,19 @@ A versatile Password Manager built in C, designed to securely manage your passwo
 
 ## Version Highlights
 
-### Version 1.0
+### [Version 1.0](Version_1.0)
 - **Core Functionalities**: Add, view, edit, delete, and generate passwords.
 - **Encryption**: Uses Caesar cipher for storing passwords securely.
 
-### Version 2.0
+### [Version 2.0](Version_2.0)
 - **Enhanced Security**: Introduces access code protection for starting the program and viewing passcodes.
 - **Existing Features**: Retains all features from Version 1.0 with added security measures.
 
-### Version 2.1
+### [Version 2.1](Version_2.1)
 - **Export Feature**: Adds functionality to export decrypted passwords to a text file.
 - **Existing Features**: Includes all features from Version 2.0 with the new export capability.
 
-### Version 3.0
+### [Version 3.0](Version_3.0)
 - **Project Renaming**: Rebranded as AegisCode Vault.
 - **Improved Security**: Enhanced encryption methods and overall security improvements.
 - **Existing Features**: Includes all features from Version 2.1 with upgraded security.
