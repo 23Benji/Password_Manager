@@ -18,11 +18,7 @@ Passwords are encrypted using Caesar cipher and can be exported in a decrypted f
 - Enhanced export functionality
 
 ## Installation
-To use the Password Manager, you'll need a C compiler installed.
-
-## Installation
-To use the Password Manager, you'll need a C compiler installed.
-
+To use AegisCode Vault, you'll need a C compiler installed and must have already cloned this Git repository!
 1. Navigate to the project folder:
     ```bash
     cd Password_Manager
