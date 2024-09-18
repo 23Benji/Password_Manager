@@ -625,6 +625,7 @@ int about_project(void){
     "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and a "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
     "\n\n"RED"Note:"reset, VERSION);
     printf("If your concerned about the security of the Managment of your passwords or find any bugs, please do not hesitate to report any security vulnerabilities to me under the "YEL"Password_Manager/Issues"reset".\n\n");
+    printf("New "YEL"Version 2.1"reset" is available, feel free to check it out.\n\n");
 
     return pressAnyKey();
 }

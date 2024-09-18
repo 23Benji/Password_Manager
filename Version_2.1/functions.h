@@ -8,6 +8,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define MAX_LINE_LENGTH 256
 #define shiftKey 19
@@ -21,6 +22,10 @@
 #define BLU "\e[0;34m"
 #define MAG "\e[0;35m"
 #define CYN "\e[0;36m"
+#define HCYN "\e[0;96m"
+#define HYEL "\e[0;93m"
+#define HRED "\e[0;91m"
+#define URED "\e[4;31m"
 #define reset "\e[0m"
 
 // Struct to store credentials
@@ -49,6 +54,8 @@ void enableEcho(void);
 int pressAnyKey(void);
 int about_project(void);
 int about_developer(void);
+int authenticate(void);
 int checkWebsiteExists(const char *website);
+void export_passwords(void);
 
 #endif // FUNCTIONS_H

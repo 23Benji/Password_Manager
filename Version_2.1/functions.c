@@ -5,7 +5,7 @@ struct credentials cred;
 
 int printTitle(void){
 
-    printf(CYN"      _____                                    _   __  __                                  \n");
+    printf(HCYN"      _____                                    _   __  __                                  \n");
     printf("     |  __ \\                                  | | |  \\/  |                                 \n");
     printf("     | |__) |_ _ ___ _____      _____  _ __ __| | | \\  / | __ _ _ __   __ _  __ _  ___ _ __ \n");
     printf("     |  ___/ _` / __/ __\\ \\ /\\ / / _ \\| '__/ _` | | |\\/| |/ _` | '_ \\ / _` |/ _` |/ _ \\ '__|\n");
@@ -344,33 +344,77 @@ int delete(void) {
 }
 
 // Function to generate a password
-int generate(void){
-    system("clear");  // Clear the screen
-    printTitle();  // Print the title
+int generate(void) {
+    system("clear"); // Clear the screen
+    printTitle();    // Print the title
 
     int len;
     printf(BLU"\n\nWelcome to the Password Generator!\n\n"reset);
-    printf("You will reciev a Password made out of random Numbers, Letters and Special characters.\n\n");
+    printf("You will receive a Password made out of random Numbers, Letters, and Special characters.\n\n");
     printf(RED"Please enter the length of desired password:\n"reset);
     printf("-[");
     scanf("%d", &len);
-   char possibleChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+-=[]{}|;:,.<>?";
-   char password[len+1];
-   
-   srand(time(0)); // seed for random number generation
-   for(int i = 0; i < len; i++) {
-      int randomIndex = rand() % (sizeof(possibleChars) - 1);
-      password[i] = possibleChars[randomIndex];
-   }
-   
-   password[len] = '\0'; // null terminate the string
-   printf(GRN"\nPassword generated successfully!\n\n");
-   printf("You\'r Password: %s\n"reset,password);
 
-   pressAnyKey();
+    // Validate password length
+    if (len <= 0) {
+    // Prompt user for character type inclusion
+        printf(RED"Invalid password length! Must be greater than 0.\n"reset);
+        return pressAnyKey();
+    }
 
-   return 0;
-   }
+    int includeLowercase, includeUppercase, includeNumbers, includeSymbols;
+    
+    printf(BLU"Include lowercase letters? ("reset GRN"1 for Yes"reset", "RED"0 for No"reset BLU"):"reset);
+    scanf("%d", &includeLowercase);
+    printf(BLU"Include uppercase letters? ("reset GRN"1 for Yes"reset", "RED"0 for No"reset BLU"):"reset);
+    scanf("%d", &includeUppercase);
+    printf(BLU"Include numbers? ("reset GRN"1 for Yes"reset", "RED"0 for No"reset BLU"):"reset);
+    scanf("%d", &includeNumbers);
+    printf(BLU"Include special symbols? ("reset GRN"1 for Yes"reset", "RED"0 for No"reset BLU"):"reset);
+    scanf("%d", &includeSymbols);
+
+    // Build the possible characters string based on user choices
+    char possibleChars[256] = ""; // Initialize to an empty string
+    if (includeLowercase) {
+        strcat(possibleChars, "abcdefghijklmnopqrstuvwxyz");
+    }
+    if (includeUppercase) {
+        strcat(possibleChars, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    }
+    if (includeNumbers) {
+        strcat(possibleChars, "1234567890");
+    }
+    if (includeSymbols) {
+        strcat(possibleChars, "!@#$%^&*()_+-=[]{}|;:,.<>?");
+    }
+
+    // Check if at least one character type is selected
+    if (strlen(possibleChars) == 0) {
+        printf(RED"No character types selected! Exiting...\n"reset);
+        return pressAnyKey();
+    }
+
+
+    // Generate password
+    char password[len + 1]; // Create an array for the password, with space for null terminator
+    srand(time(0)); // Seed for random number generation
+
+    for (int i = 0; i < len; i++) {
+        int randomIndex = rand() % strlen(possibleChars);
+        password[i] = possibleChars[randomIndex];
+    }
+
+    // Null-terminate the password string at the end
+    password[len] = '\0'; 
+
+    // Print the generated password
+    printf(GRN"\nPassword generated successfully!\n\n");
+    printf("Generated password: %s\n"reset, password);
+
+    pressAnyKey();
+
+    return 0;
+}
 
 // Function to encrypt or decrypt a string using Caesar cipher
 void caesarCipher(char *text, int shift, int encrypt) {
@@ -536,6 +580,9 @@ int authenticate(void) {
             return 1; // Authentication successful
         } else if (maxTries == 2) {
             tries++;
+        }else {
+            printf(RED"\nIncorrect passcode. Try again.\n"reset);
+            tries++;
         }
     }
 
@@ -543,3 +590,54 @@ int authenticate(void) {
     return 0; // Authentication failed
 }
 
+// Function to export the passwords to a file
+void export_passwords(void) {
+    system("clear");
+    printTitle();
+    
+    printf(YEL"Info:"reset"This feature allows you to export all your decrypted passwords into a new Txt-file.\n\n");
+
+    // Variables to store the file name and the line from the file
+    char exportFileName[100];
+    char line[MAX_LINE_LENGTH];
+    
+    // Ask the user for the name of the new file to save the decrypted passwords
+    printf("Enter name of the file of the exported passwords ("RED"without extension"reset"): ");
+    scanf("%s", exportFileName);
+    
+    // Append the .txt extension to the file name
+    strcat(exportFileName, ".txt");
+
+    // Open the original password file and the export file
+    FILE *exportFile = fopen(exportFileName, "w");
+    if (exportFile == NULL) {
+        printf(RED"Error creating export file!\n"reset);
+        return;
+    }
+
+    // Rewind the file to the beginning
+    rewind(PassFile);
+
+    // Read through each line in the original file
+    while (fgets(line, MAX_LINE_LENGTH, PassFile) != NULL) {
+        char website[50], username[50], encryptedPassword[35], decryptedPassword[35];
+
+        // Extract website, username, and password from the line
+        sscanf(line, "Website: %[^|]|Username: %[^|]|Password: %s", website, username, encryptedPassword);
+
+        // Decrypt the password
+        strcpy(decryptedPassword, encryptedPassword);  // Copy encrypted password to a new variable
+        caesarCipher(decryptedPassword, shiftKey, 0);  // Decrypt
+
+        // Write the decrypted information to the export file
+        fprintf(exportFile, "Website: %s|Username: %s|Password: %s\n", website, username, decryptedPassword);
+    }
+
+    // Close the export file
+    fclose(exportFile);
+
+    printf(GRN"\nPasswords exported successfully to '%s'!\n"reset, exportFileName);
+    printf(RED"Atention!: "reset URED"These passwords are decrypted before being written to the file, so they are readable.\n");
+    printf("           Be sure to keep the file secure and do not share it with anyone.\n"reset);
+    pressAnyKey();
+}

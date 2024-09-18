@@ -7,6 +7,7 @@
 #include<unistd.h>
 #include"functions.h"
 
+
 FILE *PassFile;  // Global variable for the password file
 
 int main(void){
@@ -27,7 +28,7 @@ if (PassFile == NULL) {
 
 // Main loop
     while (1) {
-        do {
+        
             system("clear");  // Clear the screen
             printTitle();  // Print the title
             printf(YEL"\n\nWelcome to the Password Manager!\n\n"reset);
@@ -36,28 +37,28 @@ if (PassFile == NULL) {
             printf(RED"Please select an option:"reset"\n\n");
             printf(BLU"  @\n");
             printf("  |\n");
-            printf("-[1]--Add Password\n");
+            printf("-["reset HYEL"1"reset BLU"]--Add Password\n");
             printf("  |\n");
-            printf("-[2]--Lookup Password\n");
+            printf("-["reset HYEL"2"reset BLU"]--Lookup Password\n");
             printf("  |\n");
-            printf("-[3]--Edit Password\n");
+            printf("-["reset HYEL"3"reset BLU"]--Edit Password\n");
             printf("  |\n");
-            printf("-[4]--Delete Password\n");
+            printf("-["reset HYEL"4"reset BLU"]--Delete Password\n");
             printf("  |\n");
-            printf("-[5]--Generate Password\n");
+            printf("-["reset HYEL"5"reset BLU"]--Generate Password\n");
             printf("  |\n");
-            printf("-[6]--About the Program\n");
+            printf("-["reset HYEL"6"reset BLU"]--About the Program\n");
             printf("  |\n");
-            printf("-[7]--About the Developer\n");
+            printf("-["reset HYEL"7"reset BLU"]--About the Developer\n");
+            printf("  |\n");
+            printf("-["reset HYEL"8"reset BLU"]--Export all decripted Passwords\n");
             printf("  |\n");                        
             printf("  |\n"reset);
-            printf(RED"-[00]--Exit\n"reset);
+            printf(HRED"-["HYEL"00"reset HRED"]--Exit\n"reset);
             printf(BLU"  |\n");            
-            printf("  @\n"reset);
+            printf(BLU" -@-["reset);
 
-            printf("-[");
             scanf(" %c", &choice);  //Scan choice and remove space before %c to ignore previous newline
-        } while (choice != '1' && choice != '2' && choice != '3' && choice != '4' && choice != '5' && choice != '6' && choice != '7' &&choice != '0');
 
         switch(choice) {
             case '1':
@@ -88,12 +89,18 @@ if (PassFile == NULL) {
                 about_developer();
                 fflush(stdin);  // Clear the input buffer
                 break;
+            case '8':
+                export_passwords();
+                fflush(stdin);  // Clear the input buffer
+                break;
             case '0':
                 system("clear");  // Clear the screen
                 printTitle();  // Print the title
                 printf(GRN"\n❤ Thank you for using the Password Manager!\n");
                 printf("❤ Hope to see You soon! :D\n\n\n"reset);
                 return 0;
+            default:
+                break;
         }
         
     }
