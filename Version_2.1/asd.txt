@@ -1,7 +1,0 @@
-Website: asd|Username: asd|Password: asd
-Website: qwe|Username: qwe|Password: qweqwe
-Website: azs|Username: azs|Password: azs
-Website: opera|Username: opera|Password: opera
-Website: versio|Username: verion|Password: newversion
-Website: asda|Username: asda|Password: asda
-Website: asas|Username: asas|Password: asas
