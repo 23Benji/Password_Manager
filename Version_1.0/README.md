@@ -17,17 +17,16 @@ Passwords are encrypted using Caesar cipher and stored in a text file, ensuring 
 - User interface enhancements
 
 ## Installation
-To use the Password Manager, you'll need a C compiler installed.
-
-2. Navigate to the project folder:
+To use AegisCode Vault, you'll need a C compiler installed and must have already cloned this Git repository!
+1. Navigate to the project folder:
     ```bash
     cd Password_Manager
     ```
-3. Navigate to the desired Verion:
+2. Navigate to the desired Verion:
     ```bash
     cd Version_1.0
     ```
-4. Run the makefile:
+3. Run the makefile:
     ```bash
     make
     ```
