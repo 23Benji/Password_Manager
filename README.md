@@ -1,4 +1,4 @@
-![Screenshot_from_2024-09-18_23-30-06-removebg-preview](https://github.com/user-attachments/assets/8378fdff-053e-4d5e-959e-bff24d7f9d2d)
+![Title](img/Title.png)
 # AEGISCODE VAULT (Password Manager)
 
 A versatile Password Manager built in C, designed to securely manage your passwords with various features and enhancements over its versions. This tool allows you to add, view, edit, and delete credentials, with additional functionalities introduced in later versions.
