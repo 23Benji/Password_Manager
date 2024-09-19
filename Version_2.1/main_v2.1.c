@@ -1,10 +1,3 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<ctype.h>
-#include<time.h>
-#include<termios.h>
-#include<unistd.h>
 #include"functions.h"
 
 
@@ -12,11 +5,11 @@ FILE *PassFile;  // Global variable for the password file
 
 int main(void){
 
-    system("clear");  // Clear the screen
-    printTitle();  // Print the title
-    if (!authenticate()) {
-        return 1; // Exit program if authentication fails
-    }
+system("clear");  // Clear the screen
+printTitle();  // Print the title
+if (!authenticate()) {
+    return 1; // Exit program if authentication fails
+}
 
 PassFile = fopen("PassC.txt", "a+");  // Open for appending and reading, create if it doesn't exist
 

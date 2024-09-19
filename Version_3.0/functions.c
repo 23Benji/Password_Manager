@@ -89,17 +89,12 @@ int lookup(void) {
         return 0;
     }
 
-    char inputPasscode[35];
-    int tries = 0;
-    int maxTries = 3; // Number of allowed attempts
-
-    while (tries < maxTries) {
-        printf("Enter passcode to access the Mode: ");
-        disableEcho();
-        scanf("%s", inputPasscode);
-        enableEcho();
-
-        if (strcmp(inputPasscode, PASSCODE) == 0) {
+    if(!authenticate()){
+        return pressAnyKey();
+    }else{
+        system("clear");
+        printTitle();
+    }
     
     // Rewind the file to the beginning
     rewind(PassFile);
@@ -138,11 +133,8 @@ int lookup(void) {
             }
         }
     }
-        } else {
-            printf(RED"\nIncorrect passcode. Try again.\n"reset);
-            tries++;
-        }
-    }
+        
+    
 
     printf(RED"Too many failed attempts. Access denied.\n"reset);
     return pressAnyKey();
@@ -515,12 +507,13 @@ int about_project(void){
     printTitle();  // Print the title
 
     printf("About the Project:\n\nThis is a Password Manager created by Benji. More about can be found under the '"YEL"About the Developer"reset"' option.\n\n"
-    "You are currently using Version "YEL"%s"reset". This is the "YEL"securest version"reset" of the program, implementing also Headers."
+    "You are currently using Version "YEL"%s"reset". This is the "YEL"newest"reset" and "YEL"securest version"reset" of this project, implementing also Headers."
     "\nIn this version, the "YEL"security of the passwords"reset" is "YEL"guranteed"reset" and the "YEL"Managment of the passwords"reset" is "YEL"also guranteed thanks to a LogIn Passcode"reset"."
     "\nPassword Manager is a simple program that allows you to "YEL"store your passwords securely"reset" and manage them without worrying about security."
     "\n\nYou can "YEL"add"reset", "YEL"edit"reset", "YEL"delete"reset" and "YEL"lookup"reset" your passwords."
     "\nYou can find the "YEL"saved passwords"reset" in a the password Txt-file named "YEL"PassC.txt"reset". "YEL"Passwords"reset" are "YEL"encrypted"reset", so they are "YEL"not readable"reset"."
     "\nYou can also "YEL"generate"reset" a random password of your desired length, ready to be copied and used."
+    "\nNew in this Version is the"YEL"export mode"reset"where you can export all your decrypted passwords into a new Txt-file."
     "\n\nThe program uses "YEL"Caesar cipher"reset" to encrypt and decrypt your passwords."
     "\nThis program was "YEL"created with the help of AI"reset", like "YEL"ChatGPT-4o"reset" and a "YEL"Visual Studio Code Extension"reset" called "YEL"Fitten Code"reset"."
     "\n\n"RED"Note:"reset, VERSION);
@@ -571,7 +564,7 @@ int authenticate(void) {
     int maxTries = 3; // Number of allowed attempts
 
     while (tries < maxTries) {
-        printf("Enter passcode to access the program: ");
+        printf("PLease autenticatie yourself with the passcode: ");
         disableEcho();
         scanf("%s", inputPasscode);
         enableEcho();
@@ -597,12 +590,22 @@ void export_passwords(void) {
     
     printf(YEL"Info:"reset"This feature allows you to export all your decrypted passwords into a new Txt-file.\n\n");
 
+    if(!authenticate()){
+        return pressAnyKey();
+    }else{
+        system("clear");
+        printTitle();
+        printf(YEL"Info:"reset"This feature allows you to export all your decrypted passwords into a new Txt-file.\n\n");
+
+    }
+
+
     // Variables to store the file name and the line from the file
     char exportFileName[100];
     char line[MAX_LINE_LENGTH];
     
     // Ask the user for the name of the new file to save the decrypted passwords
-    printf("Enter name of the file of the exported passwords ("RED"without extension"reset"): ");
+    printf("\nEnter name of the file of the exported passwords ("RED"without extension"reset"): ");
     scanf("%s", exportFileName);
     
     // Append the .txt extension to the file name

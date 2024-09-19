@@ -1,19 +1,19 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <termios.h>
-#include <unistd.h>
-#include <time.h>
-#include <stdbool.h>
+#include <stdio.h>// for printf() and scanf()
+#include <stdlib.h>// for rand() and srand()
+#include <string.h>// for strlen(), strcpy(), ecc.
+#include <ctype.h>// for Character Handling
+#include <termios.h>// for disabling/eneabling echo
+#include <unistd.h>// for open() and close()
+#include <time.h>// for time()
+#include <stdbool.h>// for bool data type
 
 #define MAX_LINE_LENGTH 256
 #define shiftKey 19
-#define VERSION "2.1"
-#define PASSCODE "1111"  // Replace this with your desired passcode
+#define VERSION "3.0"
+#define PASSCODE "3333"  // Replace this with your desired passcode
 
 // ANSI color codes
 #define RED "\e[0;31m"// Red

@@ -1,3 +1,6 @@
+#ifndef COLORCODES_H
+#define COLORCODES_H
+
 
 //Regular text
 #define BLK "\e[0;30m"
@@ -73,3 +76,5 @@
 #define reset "\e[0m"
 #define CRESET "\e[0m"
 #define COLOR_RESET "\e[0m"
+
+#endif //COLORCODES_H
