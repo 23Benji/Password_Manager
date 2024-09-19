@@ -1,7 +1,12 @@
 ![Title](img/Title.png)
 # AEGISCODE VAULT (Password Manager)
 
+### What is AEGISCODE VAULT?
 A versatile Password Manager built in C, designed to securely manage your passwords with various features and enhancements over its versions. This tool allows you to add, view, edit, and delete credentials, with additional functionalities introduced in later versions.
+
+
+### Why the name AEGISCODE VAULT?
+The name **AegisCode Vault** symbolizes both protection and encryption. "Aegis" refers to a protective shield from Greek mythology, emphasizing security, while "Code" highlights the encryption of passwords and data. Combined with "Vault," it represents a secure repository for storing and managing encrypted passcodes, reflecting the project's goal of providing a simple yet creative password management solution.
 
 ## Features Overview
 - **Add Passwords**: Store new passwords for different websites.
@@ -30,6 +35,7 @@ A versatile Password Manager built in C, designed to securely manage your passwo
 - **Project Renaming**: Rebranded as AegisCode Vault.
 - **Improved Security**: Enhanced encryption methods and overall security improvements.
 - **Existing Features**: Includes all features from Version 2.1 with upgraded security.
+
 
 ## How It Works
 The Password Manager encrypts passwords and saves them into a file, ensuring your data is secure. You can manage your passwords through a user-friendly interface, with encryption and export functionalities designed to protect and handle your data efficiently.
