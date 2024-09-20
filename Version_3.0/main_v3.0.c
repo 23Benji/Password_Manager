@@ -23,7 +23,7 @@ if (PassFile == NULL) {
         
             system("clear");  // Clear the screen
             printTitle();  // Print the title
-            printf(YEL"\n\nWelcome to the Password Manager!\n\n"reset);
+            printf(YEL"\n\nWelcome to the AEGISCODE VAULT, a secure Password Manager!\n\n"reset);
 
 
             printf(RED"Please select an option:"reset"\n\n");
