@@ -568,31 +568,54 @@ int checkWebsiteExists(const char *website) {
     return 0;  // Website does not exist
 }
 
-// Function to authenticate the user
 int authenticate(void) {
     char inputPasscode[35];
+    char encryptedPasscode[35];
     int tries = 0;
-    int maxTries = 3; // Number of allowed attempts
+    int maxTries = 3;
+    int passcodeShift;
 
     while (tries < maxTries) {
-        printf("PLease autenticatie yourself with the passcode: ");
+        printf("Please authenticate yourself with the passcode (numbers only): ");
         disableEcho();
         scanf("%s", inputPasscode);
         enableEcho();
 
-        if (strcmp(inputPasscode, PASSCODE) == 0) {
-            return 1; // Authentication successful
-        } else if (maxTries == 2) {
+        // Check if the input is a valid numeric passcode
+        int isNumeric = 1;
+        for (int i = 0; inputPasscode[i] != '\0'; i++) {
+            if (!isdigit(inputPasscode[i])) {
+                isNumeric = 0;
+                break;
+            }
+        }
+
+        if (!isNumeric) {
+            printf("\nInvalid input. Passcode should contain numbers only.\n");
             tries++;
-        }else {
-            printf(RED"\nIncorrect passcode. Try again.\n"reset);
+            continue;
+        }
+
+        // Convert the numeric passcode to an integer for Caesar cipher shift
+        passcodeShift = atoi(inputPasscode);
+
+        // Encrypt the string "Passcode_OK" using the input passcode as the shift
+        strcpy(encryptedPasscode, "Passcode_OK");
+        caesarCipher(encryptedPasscode, passcodeShift, 1);
+
+        // Compare the encrypted passcode with the predefined encrypted string
+        if (strcmp(encryptedPasscode, "Ufxxhtij_TP") == 0) {
+            return 1; // Authentication successful
+        } else {
+            printf("\nIncorrect passcode. Try again.\n");
             tries++;
         }
     }
 
-    printf(RED"\n\nToo many failed attempts. Access denied.\n"reset);
+    printf("\n\nToo many failed attempts. Access denied.\n");
     return 0; // Authentication failed
 }
+
 
 // Function to export the passwords to a file
 void export_passwords(void) {

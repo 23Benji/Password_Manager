@@ -13,7 +13,6 @@
 #define MAX_LINE_LENGTH 256
 #define shiftKey 19
 #define VERSION "3.0"
-#define PASSCODE "3333"  // Replace this with your desired passcode
 
 // ANSI color codes
 #define RED "\e[0;31m"// Red
